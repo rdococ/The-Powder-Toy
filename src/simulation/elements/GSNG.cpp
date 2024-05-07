@@ -8,7 +8,7 @@ void Element::Element_GSNG()
 	Name = "GSNG";
 	Colour = 0x202020_rgb;
 	MenuVisible = 1;
-	MenuSection = SC_SPECIAL;
+	MenuSection = SC_NUCLEAR;
 	Enabled = 1;
 
 	Advection = 0.0f;
