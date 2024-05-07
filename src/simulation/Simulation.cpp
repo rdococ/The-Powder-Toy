@@ -1323,6 +1323,21 @@ int Simulation::try_move(int i, int x, int y, int nx, int ny)
 		// void ctype already checked in eval_move
 		kill_part(i);
 		return 0;
+	case PT_GSNG:
+		if (!legacy_enable)
+		{
+			parts[ID(r)].temp = restrict_flt(parts[ID(r)].temp + parts[i].temp / 2, MIN_TEMP, MAX_TEMP);//3.0f;
+		}
+		if (parts[i].type != PT_PHOT) {
+			if (rng.chance(1, 5)) {
+				part_change_type(i, x, y, PT_GSNG);
+			}
+			else {
+				kill_part(i);
+			}
+			return 0;
+		}
+		break;
 	case PT_BHOL:
 	case PT_NBHL:
 		// this is where blackhole eats particles

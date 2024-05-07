@@ -136,6 +136,13 @@ static int update(UPDATE_FUNC_ARGS)
 				parts[i].vx += ((float)sim->rng.between(-500, 500))/1000.0f;
 				parts[i].vy += ((float)sim->rng.between(-500, 500))/1000.0f;
 			}
+			else if (TYP(r) == PT_GSNG)
+			{
+				if (sim->rng.chance(1, 20)) {
+					parts[i].ctype = parts[i].ctype >> 1;
+				}
+				parts[i].temp = parts[i].temp + 10.0f;
+			}
 		}
 	}
 	return 0;
