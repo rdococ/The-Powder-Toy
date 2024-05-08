@@ -1,6 +1,8 @@
 #include "simulation/ElementCommon.h"
+#include "simulation/orbitalparts.h"
 
 static int update(UPDATE_FUNC_ARGS);
+static int graphics(GRAPHICS_FUNC_ARGS);
 
 void Element::Element_GSNG()
 {
@@ -43,6 +45,7 @@ void Element::Element_GSNG()
 	HighTemperatureTransition = NT;
 
 	Update = &update;
+	Graphics = &graphics;
 }
 
 static int update(UPDATE_FUNC_ARGS)
@@ -58,5 +61,16 @@ static int update(UPDATE_FUNC_ARGS)
 		sim->gravmap[(y/CELL)*XCELLS+(x/CELL)] += restrict_flt(0.001f*parts[i].tmp, 0.1f, 51.2f);
 	else
 		sim->gravmap[(y/CELL)*XCELLS+(x/CELL)] += 0.1f;
+
+	return 0;
+}
+
+static int graphics(GRAPHICS_FUNC_ARGS)
+{
+	*firea = 255;
+	*firer = *colr;
+	*fireg = *colg;
+	*fireb = *colb;
+	*pixel_mode = FIRE_BLEND;
 	return 0;
 }
