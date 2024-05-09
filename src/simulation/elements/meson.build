@@ -194,7 +194,12 @@ simulation_elem_names = [
 	'RSST',
 	'RSSS',
 	'GSNG',
-	'STAR'
+	'STAR',
+	'LGWR',
+	'INPT',
+	'NOT',
+	'AND',
+	'OR'
 ]
 
 simulation_elem_src = []
