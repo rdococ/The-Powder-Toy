@@ -16,9 +16,9 @@ void Element::Element_STAR()
 	Enabled = 1;
 
 	Advection = 0.20f;
-	AirDrag = 0.10f * CFDS;
+	AirDrag = 0.00f * CFDS;
 	AirLoss = 1.00f;
-	Loss = 1.00f;
+	Loss = 0.97f;
 	Collision = 0.0f;
 	Gravity = 0.0f;
 	Diffusion = 0.00f;
@@ -53,7 +53,7 @@ void Element::Element_STAR()
 
 static void create(ELEMENT_CREATE_FUNC_ARGS)
 {
-	sim->parts[i].temp = sim->rng.between(5000, 6000);
+	sim->parts[i].temp = sim->rng.between(3000, 4000);
 	sim->parts[i].tmp2 = sim->rng.between(5000, 6000);
 }
 
@@ -117,7 +117,8 @@ static int update(UPDATE_FUNC_ARGS)
 	else
 	{
 		sim->pv[y / CELL][x / CELL] += 0.01f;
-		parts[i].temp += sim->pv[y / CELL][x / CELL] * 1.0f;
+		parts[i].temp *= 0.998f;
+		parts[i].temp += 5.0f + sim->pv[y / CELL][x / CELL] * 3.0f;
 	}
 
 	int orbd[4] = { 0, 0, 0, 0 };	//Orbital distances
@@ -159,7 +160,7 @@ static int update(UPDATE_FUNC_ARGS)
 
 static int graphics(GRAPHICS_FUNC_ARGS)
 {
-	int temp = cpart->temp;
+	float temp = cpart->temp;
 	*colr = *colg = *colb = 0;
 	
 	if (temp > 0.0f and temp <= 2500.0f) /* black to red */
