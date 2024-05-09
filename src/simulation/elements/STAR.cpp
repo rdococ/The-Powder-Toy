@@ -33,13 +33,13 @@ void Element::Element_STAR()
 	Weight = 30;
 
 	HeatConduct = 186;
-	Description = "Solar plasma. Produces immense pressure and gravity.";
+	Description = "Solar plasma. Consumes hydrogen, will expand into a giant and explode if it runs out.";
 
 	Properties = TYPE_LIQUID;
 
 	LowPressure = IPL;
 	LowPressureTransition = NT;
-	HighPressure = 255.0f;
+	HighPressure = 200.0f;
 	HighPressureTransition = PT_GSNG;
 	LowTemperature = ITL;
 	LowTemperatureTransition = NT;
@@ -73,6 +73,11 @@ static int update(UPDATE_FUNC_ARGS)
 				{
 					parts[i].tmp2 = (parts[i].tmp2 + parts[ID(r)].tmp2) / 2;
 					parts[ID(r)].tmp2 = parts[i].tmp2;
+				}
+				else if (TYP(r) == PT_H2)
+				{
+					parts[i].tmp2 += 1000.0f;
+					sim->kill_part(ID(r));
 				}
 			}
 		}
@@ -112,6 +117,7 @@ static int update(UPDATE_FUNC_ARGS)
 	else
 	{
 		sim->pv[y / CELL][x / CELL] += 0.01f;
+		parts[i].temp += sim->pv[y / CELL][x / CELL] * 1.0f;
 	}
 
 	int orbd[4] = { 0, 0, 0, 0 };	//Orbital distances
@@ -142,7 +148,7 @@ static int update(UPDATE_FUNC_ARGS)
 	}
 	orbitalparts_set(&parts[i].life, &parts[i].ctype, orbd, orbl);
 
-	if (abs(parts[i].vx) > 5.0f || abs(parts[i].vy) > 5.0f)
+	if (abs(parts[i].vx) > 8.0f || abs(parts[i].vy) > 8.0f)
 	{
 		sim->kill_part(i);
 		sim->create_part(-1, x, y, PT_FIRE);
@@ -155,22 +161,22 @@ static int graphics(GRAPHICS_FUNC_ARGS)
 {
 	int temp = cpart->temp;
 	*colr = *colg = *colb = 0;
-
-	if (temp >= 0.0f and temp <= 2500.0f) /* black to red */
+	
+	if (temp > 0.0f and temp <= 2500.0f) /* black to red */
 	{
 		*colr = temp / 2500.0f * 255.0f;
 	}
-	if (temp >= 2500.0f and temp <= 5000.0f) /* red to yellow */
+	else if (temp > 2500.0f and temp <= 5000.0f) /* red to yellow */
 	{
 		*colr = 255;
 		*colg = (temp - 2500.0f) / 2500.0f * 255.0f;
 	}
-	if (temp >= 5000.0f and temp <= 6000.0f) /* yellow to white */
+	else if (temp > 5000.0f and temp <= 6000.0f) /* yellow to white */
 	{
 		*colr = *colg = 255;
 		*colb = (temp - 5000.0f) / 1000.0f * 255.0f;
 	}
-	if (temp >= 6000.0f) /* white to blue */
+	else if (temp > 6000.0f) /* white to blue */
 	{
 		*colr = *colg = 255 - ((temp - 6000.0f) / 5000.0f * 196.0f);
 		*colb = 255;
